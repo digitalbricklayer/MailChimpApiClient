@@ -17,6 +17,10 @@
                     HelpText = "List all lists.")]
         public ListOptions List { get; set; }
 
+        [VerbOption("campaign",
+                    HelpText = "List all campaigns.")]
+        public CampaignOptions Campaign { get; set; }
+
         [HelpVerbOption]
         public string GetUsage(string verb)
         {

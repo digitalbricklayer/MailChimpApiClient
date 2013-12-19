@@ -1,4 +1,7 @@
-﻿namespace MailChimpApiClient
+﻿using System.Collections.Generic;
+using MailChimp.Campaigns;
+
+namespace MailChimpApiClient
 {
     using System;
     using CommandLine;
@@ -8,6 +11,7 @@
     /// </summary>
     class Program
     {
+        private const int SubjectColumnWidth = 20;
         private const int IdColumnWidth = 20;
         private const int NameColumnWidth = 35;
 
@@ -39,6 +43,9 @@
                 case "list":
                     return RunListCommand((ListOptions) invokedVerbInstance);
 
+                case "campaign":
+                    return RunCampaignCommand((CampaignOptions) invokedVerbInstance);
+
                 default:
                     return Parser.DefaultExitCodeFail;
             }
@@ -59,6 +66,29 @@
             }
 
             return 0;
+        }
+
+        private static int RunCampaignCommand(CampaignOptions campaignOptions)
+        {
+            var manager = new MailChimp.MailChimpManager(campaignOptions.Key);
+            var campaignListResult = manager.GetCampaigns(CreateCampaignFilters(campaignOptions));
+
+            Console.Out.WriteLine("{0}{1}",
+                                  "Id".PadRight(IdColumnWidth),
+                                  "Subject".PadRight(SubjectColumnWidth));
+            foreach (var campaign in campaignListResult.Data)
+            {
+                Console.Out.WriteLine("{0}{1}",
+                                      campaign.Id.PadRight(IdColumnWidth),
+                                      campaign.Subject.PadRight(SubjectColumnWidth));
+            }
+
+            return 0;
+        }
+
+        private static List<CampaignFilter> CreateCampaignFilters(CampaignOptions campaignOptions)
+        {
+            return new List<CampaignFilter>{new CampaignFilter{ListId = campaignOptions.ListId}};
         }
     }
 }
