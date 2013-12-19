@@ -11,6 +11,8 @@ namespace MailChimpApiClient
     /// </summary>
     class Program
     {
+        private const int ArchiveUrlColumnWidth = 20;
+        private const int StatusColumnWidth = 10;
         private const int SubjectColumnWidth = 20;
         private const int IdColumnWidth = 20;
         private const int NameColumnWidth = 35;
@@ -73,14 +75,19 @@ namespace MailChimpApiClient
             var manager = new MailChimp.MailChimpManager(campaignOptions.Key);
             var campaignListResult = manager.GetCampaigns(CreateCampaignFilters(campaignOptions));
 
-            Console.Out.WriteLine("{0}{1}",
+            Console.Out.WriteLine("{0}{1}{2}{3}",
                                   "Id".PadRight(IdColumnWidth),
-                                  "Subject".PadRight(SubjectColumnWidth));
+                                  "Subject".PadRight(SubjectColumnWidth),
+                                  "Status".PadRight(StatusColumnWidth),
+                                  "URL".PadRight(ArchiveUrlColumnWidth));
+
             foreach (var campaign in campaignListResult.Data)
             {
-                Console.Out.WriteLine("{0}{1}",
+                Console.Out.WriteLine("{0}{1}{2}{3}",
                                       campaign.Id.PadRight(IdColumnWidth),
-                                      campaign.Subject.PadRight(SubjectColumnWidth));
+                                      campaign.Subject.PadRight(SubjectColumnWidth),
+                                      campaign.Status.PadRight(StatusColumnWidth),
+                                      campaign.ArchiveUrl);
             }
 
             return 0;
